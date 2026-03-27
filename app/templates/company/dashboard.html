@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h2>Company Dashboard - {{ current_user.name }}</h2>
+            <p style="color: var(--text-muted);">Manage your placement drives and review applications.</p>
+        </div>
+        <a href="{{ url_for('company.create_drive') }}" class="btn btn-primary">Post New Drive</a>
+    </div>
+</div>
+
+<div class="card">
+    <h3 style="margin-bottom: 1.5rem;">Your Placement Drives</h3>
+    {% if drives %}
+        <div class="grid">
+            {% for drive in drives %}
+                <div class="card" style="border: 1px solid var(--border); box-shadow: none; margin-bottom: 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <h4 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 0.25rem;">{{ drive.job_title }}</h4>
+                            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Posted on: {{ drive.deadline }}</p>
+                            
+                            <div style="margin-bottom: 1rem;">
+                                {% if drive.status == 'Approved' %}
+                                    <span class="badge badge-success">Active & Approved</span>
+                                {% elif drive.status == 'Pending' %}
+                                    <span class="badge badge-pending">Pending Admin Approval</span>
+                                {% else %}
+                                    <span class="badge badge-danger">{{ drive.status }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--text-main); line-height: 1;">
+                                {{ drive.applications|length }}
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Applicants</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                        <a href="{{ url_for('company.view_applications', drive_id=drive.id) }}" class="btn btn-outline" style="width: 100%; border-color: var(--border); color: var(--text-main);">View Applications</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="padding: 3rem; text-align: center; color: var(--text-muted); background: #f9fafb; border-radius: var(--radius-md);">
+            <p style="margin-bottom: 1rem;">You haven't posted any placement drives yet.</p>
+            <a href="{{ url_for('company.create_drive') }}" class="btn btn-outline">Create Your First Drive</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

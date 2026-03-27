@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h2>Manage Students</h2>
+        </div>
+        <div>
+            <form action="{{ url_for('admin.students') }}" method="GET" style="display: flex; gap: 0.5rem;">
+                <input type="text" name="query" class="form-control" placeholder="Search by name..." value="{{ request.args.get('query', '') }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="padding: 0;">
+    <div class="table-wrapper">
+        <table class="table" style="margin: 0;">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Academics</th>
+                    <th>Contact</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                    <tr>
+                        <td>
+                            <div style="font-weight: 500;">{{ student.name }}</div>
+                            {% if student.resume %}
+                                <a href="{{ student.resume }}" target="_blank" style="font-size: 0.8rem; color: var(--primary);">View Resume</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="font-size: 0.9rem;">
+                                {{ student.branch or 'Branch N/A' }} <br>
+                                <span style="color: var(--text-muted);">CGPA: {{ student.cgpa or 'N/A' }} | Batch: {{ student.passing_year or 'N/A' }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.9rem;">
+                                <a href="mailto:{{ student.email }}">{{ student.email }}</a><br>
+                                <span style="color: var(--text-muted);">{{ student.contact_number or 'No phone' }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            {% if student.is_blacklisted %}
+                                <span class="badge badge-danger">Blacklisted</span>
+                            {% else %}
+                                <span class="badge badge-success">Active</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if student.is_blacklisted %}
+                                <a href="{{ url_for('admin.blacklist_student', student_id=student.id) }}" class="btn btn-outline btn-sm" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Un-Blacklist</a>
+                            {% else %}
+                                <a href="{{ url_for('admin.blacklist_student', student_id=student.id) }}" class="btn btn-danger btn-sm" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Blacklist</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">No students found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

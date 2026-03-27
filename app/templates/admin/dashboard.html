@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem;">
+    <h2>Admin Dashboard</h2>
+    <p style="color: var(--text-muted);">Overview of platform statistics.</p>
+</div>
+
+<div class="grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 2rem;">
+    <div class="card" style="text-align: center; margin-bottom: 0;">
+        <h3 style="color: var(--text-muted); font-size: 1rem;">Total Students</h3>
+        <p style="font-size: 2.5rem; font-weight: 700; color: var(--primary);">{{ students }}</p>
+    </div>
+    
+    <div class="card" style="text-align: center; margin-bottom: 0;">
+        <h3 style="color: var(--text-muted); font-size: 1rem;">Total Companies</h3>
+        <p style="font-size: 2.5rem; font-weight: 700; color: var(--secondary);">{{ companies }}</p>
+    </div>
+    
+    <div class="card" style="text-align: center; margin-bottom: 0;">
+        <h3 style="color: var(--text-muted); font-size: 1rem;">Placement Drives</h3>
+        <p style="font-size: 2.5rem; font-weight: 700; color: var(--info);">{{ drives }}</p>
+    </div>
+    
+    <div class="card" style="text-align: center; margin-bottom: 0;">
+        <h3 style="color: var(--text-muted); font-size: 1rem;">Total Applications</h3>
+        <p style="font-size: 2.5rem; font-weight: 700; color: var(--warning);">{{ applications }}</p>
+    </div>
+</div>
+
+<div class="grid">
+    <div class="card" style="cursor: pointer;" onclick="window.location.href='{{ url_for('admin.companies') }}'">
+        <h3 class="card-title">Manage Companies</h3>
+        <p style="color: var(--text-muted);">Approve new companies, blacklist existing ones, or remove companies.</p>
+    </div>
+    
+    <div class="card" style="cursor: pointer;" onclick="window.location.href='{{ url_for('admin.drives') }}'">
+        <h3 class="card-title">Manage Drives</h3>
+        <p style="color: var(--text-muted);">Review and approve new placement drives posted by companies.</p>
+    </div>
+    
+    <div class="card" style="cursor: pointer;" onclick="window.location.href='{{ url_for('admin.students') }}'">
+        <h3 class="card-title">Manage Students</h3>
+        <p style="color: var(--text-muted);">Search students, view profiles, and manage blacklist status.</p>
+    </div>
+</div>
+{% endblock %}

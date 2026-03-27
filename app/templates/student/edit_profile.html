@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <h2 style="margin-bottom: 2rem; color: var(--text-main);">Update Profile</h2>
+    
+    <form method="POST" action="{{ url_for('student.edit_profile') }}">
+        <div class="grid" style="grid-template-columns: 1fr 1fr;">
+            <!-- Personal Information -->
+            <div class="form-group">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" id="name" name="name" class="form-control" value="{{ current_user.name }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="contact_number" class="form-label">Contact Number</label>
+                <input type="text" id="contact_number" name="contact_number" class="form-control" value="{{ current_user.contact_number or '' }}" placeholder="+91 XXXXXXXXXX">
+            </div>
+
+            <!-- Academic Information -->
+            <div class="form-group">
+                <label for="branch" class="form-label">Branch / Course</label>
+                <input type="text" id="branch" name="branch" class="form-control" value="{{ current_user.branch or '' }}" placeholder="e.g., Computer Science">
+            </div>
+            
+            <div class="form-group">
+                <label for="cgpa" class="form-label">Current CGPA</label>
+                <input type="number" step="0.01" id="cgpa" name="cgpa" class="form-control" value="{{ current_user.cgpa or '' }}" placeholder="e.g., 8.5">
+            </div>
+            
+            <div class="form-group">
+                <label for="passing_year" class="form-label">Year of Passing</label>
+                <input type="number" id="passing_year" name="passing_year" class="form-control" value="{{ current_user.passing_year or '' }}" placeholder="e.g., 2025">
+            </div>
+            
+            <div class="form-group">
+                <label for="resume" class="form-label">Resume Link (GDrive/Dropbox)</label>
+                <input type="url" id="resume" name="resume" class="form-control" value="{{ current_user.resume or '' }}" placeholder="https://link.to.resume">
+            </div>
+        </div>
+        
+        <div class="form-group" style="margin-top: 1rem;">
+            <label for="skills" class="form-label">Key Skills (Comma separated)</label>
+            <textarea id="skills" name="skills" class="form-control" rows="3" placeholder="Python, React, SQL, Problem Solving">{{ current_user.skills or '' }}</textarea>
+        </div>
+        
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">Save Changes</button>
+            <a href="{{ url_for('student.dashboard') }}" class="btn btn-outline" style="flex: 1;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

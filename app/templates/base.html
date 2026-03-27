@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="{{ url_for('main.home') }}">Nexus Placement</a>
+        </div>
+        <div class="nav-links">
+            {% if current_user.is_authenticated %}
+                {% if current_user.__class__.__name__ == 'Student' %}
+                    <a href="{{ url_for('student.dashboard') }}" class="nav-item">Dashboard</a>
+                    <a href="{{ url_for('student.edit_profile') }}" class="nav-item">Profile</a>
+                {% elif current_user.__class__.__name__ == 'Company' %}
+                    <a href="{{ url_for('company.dashboard') }}" class="nav-item">Dashboard</a>
+                    <a href="{{ url_for('company.create_drive') }}" class="nav-item">Create Drive</a>
+                {% elif current_user.__class__.__name__ == 'Admin' %}
+                    <a href="{{ url_for('admin.dashboard') }}" class="nav-item">Dashboard</a>
+                    <a href="{{ url_for('admin.drives') }}" class="nav-item">Drives</a>
+                    <a href="{{ url_for('admin.students') }}" class="nav-item">Students</a>
+                    <a href="{{ url_for('admin.companies') }}" class="nav-item">Companies</a>
+                {% endif %}
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-outline">Logout</a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-outline">Login</a>
+                <a href="{{ url_for('auth.register_student') }}" class="btn btn-primary">Student Register</a>
+                <a href="{{ url_for('auth.register_company') }}" class="btn btn-primary" style="background-color: var(--secondary)">Company Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>&copy; {{ now_year|default(2025) }} Nexus Placement Portal. All rights reserved.</p>
+    </footer>
+</body>
+</html>

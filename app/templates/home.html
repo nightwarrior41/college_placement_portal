@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero">
+    <h1>Welcome to Nexus Placement Portal</h1>
+    <p>Connecting brilliant minds with top-tier companies. A centralized platform for college placements.</p>
+    <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 1rem;">
+        <a href="{{ url_for('auth.register_student') }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Student Registration</a>
+        <a href="{{ url_for('auth.register_company') }}" class="btn btn-success" style="font-size: 1.1rem; padding: 0.8rem 2rem; background-color: var(--secondary);">Partner with Us</a>
+    </div>
+</div>
+
+<div class="grid" style="margin-top: 3rem;">
+    <div class="card">
+        <h3 class="card-title">For Students</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">Build your profile, track your applications, and land your dream job with top companies actively looking for talent.</p>
+    </div>
+    <div class="card">
+        <h3 class="card-title">For Companies</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">Post drives, manage applications seamlessly, and recruit from a verified pool of exceptional students.</p>
+    </div>
+    <div class="card">
+        <h3 class="card-title">Admin Control</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">Comprehensive dashboard to verify companies, manage drives, and generate detailed placement reports.</p>
+    </div>
+</div>
+{% endblock %}

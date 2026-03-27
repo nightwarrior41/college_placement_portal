@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem;">
+    <h2>Manage Placement Drives</h2>
+</div>
+
+<div class="card" style="padding: 0;">
+    <div class="table-wrapper">
+        <table class="table" style="margin: 0;">
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Role & CTC</th>
+                    <th>Date & Deadline</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for drive in drives %}
+                    <tr>
+                        <td style="font-weight: 500;">{{ drive.company.name }}</td>
+                        <td>
+                            <div style="font-weight: 500;">{{ drive.job_title }}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">{{ drive.role_type }} | {{ drive.ctc }}</div>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.85rem;">Deadline: {{ drive.deadline }}</div>
+                        </td>
+                        <td>
+                            {% if drive.status == 'Approved' %}
+                                <span class="badge badge-success">{{ drive.status }}</span>
+                            {% elif drive.status == 'Pending' %}
+                                <span class="badge badge-pending">{{ drive.status }}</span>
+                            {% else %}
+                                <span class="badge badge-danger">{{ drive.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if drive.status == 'Pending' %}
+                                <a href="{{ url_for('admin.approve_drive', drive_id=drive.id) }}" class="btn btn-success btn-sm" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Approve</a>
+                            {% else %}
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">No action needed</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">No placement drives found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

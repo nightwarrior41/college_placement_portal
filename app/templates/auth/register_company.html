@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 2rem auto;">
+    <div class="card">
+        <h2 style="text-align: center; margin-bottom: 2rem; color: var(--secondary);">Company Partner Registration</h2>
+        
+        <form method="POST" action="{{ url_for('auth.register_company') }}">
+            <div class="form-group">
+                <label for="name" class="form-label">Company Name</label>
+                <input type="text" id="name" name="name" class="form-control" required placeholder="Tech Corp Inc.">
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label">Official HR Email</label>
+                <input type="email" id="email" name="email" class="form-control" required placeholder="hr@techcorp.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="website" class="form-label">Company Website</label>
+                <input type="url" id="website" name="website" class="form-control" placeholder="https://www.techcorp.com">
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" name="password" class="form-control" required minlength="6" placeholder="Create a strong password">
+            </div>
+            
+            <button type="submit" class="btn btn-success" style="width: 100%; font-size: 1.1rem;">Submit for Verification</button>
+        </form>
+        
+        <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem; color: var(--text-muted);">
+            Already partnered with us? <a href="{{ url_for('auth.login') }}">Login here</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

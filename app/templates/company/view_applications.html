@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h2>Applicants for {{ drive.job_title }}</h2>
+            <p><strong>CTC:</strong> {{ drive.ctc }} | <strong>Type:</strong> {{ drive.role_type }} | <strong>Status:</strong> {{ drive.status }}</p>
+        </div>
+        <a href="{{ url_for('company.dashboard') }}" class="btn btn-outline">Back to Dashboard</a>
+    </div>
+</div>
+
+<div class="card" style="padding: 0;">
+    {% if applications %}
+        <div class="table-wrapper">
+            <table class="table" style="margin: 0;">
+                <thead>
+                    <tr>
+                        <th>Candidate Name</th>
+                        <th>Branch</th>
+                        <th>CGPA</th>
+                        <th>Current Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                        <tr>
+                            <td>
+                                <div style="font-weight: 500;">{{ app.student.name }}</div>
+                                <div style="font-size: 0.85rem; color: var(--text-muted);">
+                                    <a href="mailto:{{ app.student.email }}" style="color: inherit;">{{ app.student.email }}</a>
+                                    {% if app.student.contact_number %}
+                                        | {{ app.student.contact_number }}
+                                    {% endif %}
+                                </div>
+                                {% if app.student.resume %}
+                                    <div style="margin-top: 0.25rem;">
+                                        <a href="{{ app.student.resume }}" target="_blank" style="font-size: 0.85rem; color: var(--primary);">View Resume</a>
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>{{ app.student.branch or 'N/A' }} <br> <small class="text-muted">Batch {{ app.student.passing_year or 'N/A' }}</small></td>
+                            <td>{{ app.student.cgpa or 'N/A' }}</td>
+                            <td>
+                                {% if app.status == 'Applied' %}
+                                    <span class="badge badge-primary">{{ app.status }}</span>
+                                {% elif app.status == 'Selected' %}
+                                    <span class="badge badge-success">{{ app.status }}</span>
+                                {% elif app.status == 'Rejected' %}
+                                    <span class="badge badge-danger">{{ app.status }}</span>
+                                {% else %}
+                                    <span class="badge badge-pending">{{ app.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    {% if app.status == 'Applied' %}
+                                        <a href="{{ url_for('company.update_status', application_id=app.id, status='Shortlisted') }}" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Shortlist</a>
+                                    {% elif app.status == 'Shortlisted' %}
+                                        <a href="{{ url_for('company.update_status', application_id=app.id, status='Interviewed') }}" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Interviewed</a>
+                                    {% elif app.status == 'Interviewed' %}
+                                        <a href="{{ url_for('company.update_status', application_id=app.id, status='Selected') }}" class="btn btn-success" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Select</a>
+                                    {% endif %}
+                                    
+                                    {% if app.status != 'Rejected' and app.status != 'Selected' %}
+                                        <a href="{{ url_for('company.update_status', application_id=app.id, status='Rejected') }}" class="btn btn-danger" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Reject</a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="padding: 3rem; text-align: center; color: var(--text-muted);">
+            <p>No applications received for this drive yet.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

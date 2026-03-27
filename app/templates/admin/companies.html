@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h2>Manage Companies</h2>
+        </div>
+        <div>
+            <form action="{{ url_for('admin.companies') }}" method="GET" style="display: flex; gap: 0.5rem;">
+                <input type="text" name="query" class="form-control" placeholder="Search companies..." value="{{ request.args.get('query', '') }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="padding: 0;">
+    <div class="table-wrapper">
+        <table class="table" style="margin: 0;">
+            <thead>
+                <tr>
+                    <th>Company Name</th>
+                    <th>Email / Website</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for company in companies %}
+                    <tr>
+                        <td style="font-weight: 500;">
+                            {{ company.name }}
+                            {% if company.is_blacklisted %}
+                                <span class="badge badge-danger" style="margin-left: 0.5rem; font-size: 0.6rem;">Blacklisted</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="font-size: 0.9rem;">
+                                <a href="mailto:{{ company.email }}">{{ company.email }}</a><br>
+                                {% if company.website %}
+                                    <a href="{{ company.website }}" target="_blank" style="color: var(--text-muted);">{{ company.website }}</a>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            {% if company.approved %}
+                                <span class="badge badge-success">Approved</span>
+                            {% else %}
+                                <span class="badge badge-pending">Pending Approval</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem;">
+                                {% if not company.approved %}
+                                    <a href="{{ url_for('admin.approve_company', company_id=company.id) }}" class="btn btn-success btn-sm" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Approve</a>
+                                {% endif %}
+                                
+                                {% if company.is_blacklisted %}
+                                    <a href="{{ url_for('admin.blacklist_company', company_id=company.id) }}" class="btn btn-outline btn-sm" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Un-Blacklist</a>
+                                {% else %}
+                                    <a href="{{ url_for('admin.blacklist_company', company_id=company.id) }}" class="btn btn-warning btn-sm" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Blacklist</a>
+                                {% endif %}
+                                
+                                <a href="{{ url_for('admin.delete_company', company_id=company.id) }}" class="btn btn-danger btn-sm" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;" onclick="return confirm('Are you sure you want to delete this company?');">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-muted);">No companies found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

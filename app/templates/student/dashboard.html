@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h2>Welcome back, {{ current_user.name }}!</h2>
+            <p style="color: var(--text-muted);">Manage your profile and track applications from here.</p>
+        </div>
+        <a href="{{ url_for('student.edit_profile') }}" class="btn btn-outline">Edit Profile</a>
+    </div>
+</div>
+
+<div class="grid">
+    <!-- Active Drives -->
+    <div style="grid-column: span 2;">
+        <h3 style="margin-bottom: 1rem;">Active Placement Drives</h3>
+        {% if drives %}
+            {% for drive in drives %}
+                <div class="card" style="border-left: 4px solid var(--primary);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <h4 style="font-size: 1.25rem; color: var(--primary); margin-bottom: 0.5rem;">{{ drive.job_title }}</h4>
+                            <p style="font-weight: 500; margin-bottom: 0.5rem;">{{ drive.company.name }}</p>
+                            {# Bug 4 Fix: guard against None description before slicing #}
+                            {% if drive.description %}
+                                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">{{ drive.description[:150] }}{% if drive.description|length > 150 %}...{% endif %}</p>
+                            {% endif %}
+
+                            <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                                <span><strong style="color: var(--text-main);">CTC:</strong> {{ drive.ctc or 'Not specified' }}</span>
+                                <span><strong style="color: var(--text-main);">Role:</strong> {{ drive.role_type or 'Full-time' }}</span>
+                                <span><strong style="color: var(--text-main);">Deadline:</strong> {{ drive.deadline or 'TBD' }}</span>
+                            </div>
+
+                            {% if drive.eligibility %}
+                                <div><strong style="font-size: 0.9rem;">Eligibility:</strong> <span style="font-size: 0.9rem; color: var(--text-muted);">{{ drive.eligibility }}</span></div>
+                            {% endif %}
+                        </div>
+                        <div>
+                            {% set already_applied = applications | selectattr('drive_id', 'equalto', drive.id) | list %}
+                            {% if already_applied %}
+                                <span class="badge badge-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Applied</span>
+                            {% else %}
+                                <a href="{{ url_for('student.apply', drive_id=drive.id) }}" class="btn btn-primary btn-sm">Apply Now</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="card" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                <p>No active placement drives at the moment. Check back later!</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- My Applications -->
+    <div>
+        <h3 style="margin-bottom: 1rem;">My Applications</h3>
+        <div class="card" style="padding: 0;">
+            {% if applications %}
+                <div class="table-wrapper">
+                    <table class="table" style="margin: 0;">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app in applications %}
+                                <tr>
+                                    <td style="font-weight: 500;">{{ app.drive.company.name }}</td>
+                                    <td>{{ app.drive.job_title }}</td>
+                                    <td>
+                                        {% if app.status == 'Applied' %}
+                                            <span class="badge badge-primary">{{ app.status }}</span>
+                                        {% elif app.status == 'Selected' %}
+                                            <span class="badge badge-success">{{ app.status }}</span>
+                                        {% elif app.status in ['Rejected', 'Blacklisted'] %}
+                                            <span class="badge badge-danger">{{ app.status }}</span>
+                                        {% else %}
+                                            <span class="badge badge-pending">{{ app.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                    <p>You haven't applied to any drives yet.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
